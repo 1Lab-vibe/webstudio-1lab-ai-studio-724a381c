@@ -1,11 +1,7 @@
 {
   "leadId": "724a381c-02af-42d3-b115-aca19cfc1bfe",
   "businessName": "1Lab AI Studio",
-  "city": "",
-  "niche": "внедрение ИИ в отделы продаж и поддержки",
   "publicUrl": "https://webstudio.1true.ru/projects/1lab-ai-studio-724a381c/",
-  "slug": "1lab-ai-studio-724a381c",
-  "strategy": "coder_generated_preview",
   "fallbackReason": "Lovable create_project did not return project_id",
-  "deployedAt": "2026-05-07T21:23:54.655Z"
+  "publishedToGitHubAt": "2026-05-07T21:23:59.342Z"
 }
