@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 98%;
+    --foreground: 222 30% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 30% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 30% 12%;
+
+    --primary: 222 47% 14%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 15% 95%;
+    --secondary-foreground: 222 30% 12%;
+
+    --muted: 220 15% 94%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 158 64% 42%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 158 64% 42%;
+
+    --radius: 0.75rem;
+
+    --brand: 222 47% 14%;
+    --brand-glow: 158 64% 42%;
+    --yandex: 0 84% 56%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(222 47% 14%) 0%, hsl(222 50% 22%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(158 64% 42%), hsl(180 70% 40%));
+    --shadow-soft: 0 4px 24px -8px hsl(222 47% 14% / 0.12);
+    --shadow-card: 0 1px 3px hsl(222 47% 14% / 0.06), 0 8px 32px -12px hsl(222 47% 14% / 0.1);
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  h1, h2, h3 { @apply tracking-tight; }
+}
