@@ -1,320 +1,321 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import {
-  ArrowRight,
-  Bot,
-  Workflow,
-  Database,
-  Headphones,
-  Sparkles,
-  Star,
-  MapPin,
-  Mail,
-  Send,
-  Phone,
-  Check,
-  Clock,
-} from "lucide-react";
-import FlowDiagram from "@/components/FlowDiagram";
 import hero from "@/assets/hero.jpg";
-import caseSupport from "@/assets/case-support.jpg";
-import caseSales from "@/assets/case-sales.jpg";
-import integrations from "@/assets/integrations.jpg";
+import caseBot from "@/assets/case-bot.jpg";
+import services from "@/assets/services.jpg";
 import team from "@/assets/team.jpg";
+import processImg from "@/assets/process.jpg";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
-const services = [
-  { icon: Bot, title: "AI-ассистенты для продаж", desc: "Квалификация лида, ответы 24/7, передача готового контакта менеджеру в CRM." },
-  { icon: Headphones, title: "AI-поддержка клиентов", desc: "Закрываем 60–80% обращений первой линии. Эскалация — только сложные кейсы." },
-  { icon: Database, title: "Интеграции с CRM и API", desc: "Bitrix24, amoCRM, 1С, Telegram, WhatsApp. Свои сервисы — через REST/Webhook." },
-  { icon: Workflow, title: "Нейросотрудники под задачу", desc: "Подбор счетов, заполнение документов, обработка заявок. По вашему регламенту." },
-  { icon: Sparkles, title: "Сопровождение А1", desc: "Не «сдали и забыли». Ежемесячный разбор диалогов, дообучение, метрики." },
-];
+const Stat = ({ k, v }: { k: string; v: string }) => (
+  <div className="flex flex-col gap-1">
+    <div className="text-2xl font-semibold tracking-tight">{v}</div>
+    <div className="text-xs text-muted-foreground uppercase tracking-wider">{k}</div>
+  </div>
+);
 
-const reviews = [
-  { name: "Дмитрий К.", role: "РОП, B2B-услуги", text: "За 3 недели бот закрыл 64% входящих чатов. Менеджеры наконец занимаются продажами, а не «здравствуйте, а сколько стоит»." },
-  { name: "Анна М.", role: "Владелец интернет-магазина", text: "Подключили к amoCRM и Telegram. Воронка стала прозрачной, ничего не теряется. Отвечают быстро, по делу, без воды." },
-  { name: "Сергей П.", role: "Директор клиники", text: "Оператор первой линии — теперь нейросеть. Записи на приём выросли, нагрузка на администраторов упала вдвое." },
-];
-
-const process = [
-  { step: "01", title: "Бриф 30 минут", desc: "Разбираем задачу, считаем эффект. Без презентаций." },
-  { step: "02", title: "Пилот за 2 недели", desc: "Один сценарий, реальные данные, измеримый результат." },
-  { step: "03", title: "Интеграция и обучение", desc: "Подключаем к CRM/телефонии, обучаем команду." },
-  { step: "04", title: "Сопровождение", desc: "Метрики, дообучение, развитие сценариев." },
-];
+const FlowDiagram = () => (
+  <svg viewBox="0 0 600 220" className="w-full h-auto" aria-label="Схема работы AI-ассистента">
+    <defs>
+      <linearGradient id="lg" x1="0" x2="1">
+        <stop offset="0" stopColor="hsl(195 90% 60%)" />
+        <stop offset="1" stopColor="hsl(168 76% 52%)" />
+      </linearGradient>
+    </defs>
+    {[
+      { x: 60, label: "Клиент", sub: "WhatsApp · Telegram" },
+      { x: 230, label: "AI-ассистент", sub: "GPT · контекст" },
+      { x: 400, label: "CRM", sub: "AmoCRM · Bitrix" },
+      { x: 540, label: "Менеджер", sub: "" },
+    ].map((n, i) => (
+      <g key={i}>
+        <rect x={n.x - 50} y={80} width={100} height={60} rx={10}
+          fill="hsl(220 16% 11%)" stroke="hsl(220 12% 22%)" />
+        <text x={n.x} y={108} textAnchor="middle" fill="hsl(210 20% 96%)" fontSize="13" fontWeight="600">{n.label}</text>
+        <text x={n.x} y={126} textAnchor="middle" fill="hsl(215 14% 60%)" fontSize="9">{n.sub}</text>
+      </g>
+    ))}
+    {[[110, 180], [280, 350], [450, 490]].map(([a, b], i) => (
+      <line key={i} x1={a} y1={110} x2={b} y2={110}
+        stroke="url(#lg)" strokeWidth="2" className="flow-line" />
+    ))}
+    <circle cx="300" cy="40" r="6" fill="hsl(168 76% 52%)" className="pulse-dot" />
+    <text x="300" y="25" textAnchor="middle" fill="hsl(215 14% 60%)" fontSize="10" className="mono">обработка ~2 сек</text>
+    <line x1="300" y1="48" x2="300" y2="78" stroke="hsl(168 76% 52% / 0.4)" strokeDasharray="2 3" />
+    <circle cx="540" cy="180" r="5" fill="hsl(195 90% 60%)" className="pulse-dot" />
+    <text x="540" y="200" textAnchor="middle" fill="hsl(215 14% 60%)" fontSize="10" className="mono">только тёплые лиды</text>
+  </svg>
+);
 
 const Index = () => {
   const [form, setForm] = useState({ name: "", contact: "", task: "" });
-
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.contact) {
-      toast.error("Укажите имя и контакт для связи");
-      return;
-    }
-    toast.success("Заявка отправлена. Свяжемся в течение часа в рабочее время.");
+    toast({ title: "Заявка отправлена", description: "Свяжемся в течение 2 часов в рабочее время." });
     setForm({ name: "", contact: "", task: "" });
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* NAV */}
-      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <a href="#" className="flex items-center gap-2 font-bold tracking-tight">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground font-mono text-sm">1L</span>
-            <span>1Lab <span className="text-muted-foreground font-medium">AI Studio</span></span>
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b hairline">
+        <div className="container flex items-center justify-between h-16">
+          <a href="#" className="flex items-center gap-2 font-semibold">
+            <span className="w-7 h-7 rounded-lg bg-primary text-primary-foreground grid place-items-center text-sm font-bold">1L</span>
+            1Lab <span className="text-muted-foreground font-normal">AI Studio</span>
           </a>
-          <nav className="hidden gap-6 text-sm text-muted-foreground md:flex">
+          <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
             <a href="#services" className="hover:text-foreground transition">Услуги</a>
             <a href="#cases" className="hover:text-foreground transition">Кейсы</a>
             <a href="#process" className="hover:text-foreground transition">Процесс</a>
-            <a href="#contact" className="hover:text-foreground transition">Контакты</a>
+            <a href="#price" className="hover:text-foreground transition">Цены</a>
+            <a href="#contacts" className="hover:text-foreground transition">Контакты</a>
           </nav>
-          <Button asChild size="sm" className="font-semibold">
-            <a href="#contact">Обсудить задачу</a>
-          </Button>
+          <a href="#price" className="text-sm px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition">Заявка</a>
         </div>
       </header>
 
       {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 grid-bg opacity-60" aria-hidden />
-        <div className="container relative mx-auto grid gap-10 px-4 py-12 md:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-24">
-          <div className="animate-fade-up">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
-              </span>
-              Принимаем заявки на пилот · май 2026
+      <section className="relative overflow-hidden border-b hairline">
+        <div className="container grid lg:grid-cols-12 gap-10 py-12 lg:py-20 items-center">
+          <div className="lg:col-span-6 space-y-7">
+            <div className="inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-secondary text-muted-foreground hairline border">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary pulse-dot" />
+              Санкт-Петербург · ул. Гороховая, 7
             </div>
-            <h1 className="text-balance text-4xl font-extrabold leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
-              Внедряем ИИ <br className="hidden sm:block" />
-              в отделы продаж <br className="hidden sm:block" />
-              и поддержки
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-balance">
+              Внедряем ИИ <br />
+              в отделы продаж <br />
+              <span className="text-primary">и поддержки</span>
             </h1>
-            <p className="mt-5 max-w-xl text-balance text-base text-muted-foreground md:text-lg">
-              1Lab AI Studio — студия в Москве. Делаем чат-ботов, нейросотрудников и интеграции с CRM. Запускаем пилот за 2 недели на ваших данных. Без абстракций — только метрики и сценарии, которые работают.
+            <p className="text-lg text-muted-foreground max-w-xl text-balance">
+              Чат-боты, ИИ-ассистенты и интеграции с CRM/API. Пилот за 2 недели — без подписок и без долгих ТЗ.
             </p>
-
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="font-semibold">
-                <a href="#contact">Оставить заявку <ArrowRight className="ml-1 h-4 w-4" /></a>
-              </Button>
-              <Button asChild variant="secondary" size="lg">
-                <a href="#cases">Смотреть кейсы</a>
-              </Button>
+            <div className="flex flex-wrap gap-3">
+              <a href="#price" className="px-5 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition">Получить пилот за 15 000 ₽</a>
+              <a href="https://t.me/one_lab" target="_blank" rel="noreferrer" className="px-5 py-3 rounded-xl bg-secondary text-foreground hairline border hover:bg-elevated transition">Написать в Telegram</a>
             </div>
 
-            {/* Trust row: Yandex */}
-            <a
-              href="https://yandex.ru/maps/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 flex w-fit items-center gap-4 rounded-xl border border-border bg-card/70 p-4 transition hover:border-primary/40 hover:bg-card"
-            >
-              <div className="grid h-11 w-11 place-items-center rounded-lg bg-[hsl(0_0%_100%)] font-bold text-[hsl(0_85%_55%)]">Я</div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                  ))}
-                  <span className="ml-1 text-sm font-semibold">4.9</span>
-                  <span className="text-xs text-muted-foreground">· 38 отзывов</span>
+            {/* Yandex trust */}
+            <div className="flex items-center gap-4 pt-4 border-t hairline">
+              <div className="w-10 h-10 rounded-lg bg-[#FC3F1D] grid place-items-center font-bold text-white">Я</div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="font-semibold">4.9</span>
+                  <span className="text-amber-400">★★★★★</span>
+                  <span className="text-muted-foreground">· 38 отзывов на Яндекс.Картах</span>
                 </div>
-                <div className="mt-0.5 text-xs text-muted-foreground">Карточка в Яндекс Картах · Москва</div>
+                <div className="text-xs text-muted-foreground mt-0.5">Подтверждённая организация · в топ-3 по запросу «AI студия СПб»</div>
               </div>
-            </a>
+            </div>
           </div>
 
-          {/* Hero visual */}
-          <div className="relative animate-fade-up">
-            <div className="relative overflow-hidden rounded-2xl border border-border shadow-[var(--shadow-card)]">
-              <img
-                src={hero}
-                alt="AI-команда 1Lab за работой над интеграцией"
-                width={1536}
-                height={1024}
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-xl border border-border bg-background/80 p-3 backdrop-blur-md">
-                <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary/15 text-primary">
-                  <Clock className="h-4 w-4" />
+          <div className="lg:col-span-6 relative">
+            <div className="relative rounded-2xl overflow-hidden hairline border bg-elevated">
+              <img src={hero} alt="ИИ для отделов продаж: рабочее место с CRM-дашбордами"
+                width={1536} height={1024} className="w-full h-auto object-cover aspect-[4/3]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 grid grid-cols-3 gap-3">
+                <div className="bg-background/80 backdrop-blur rounded-lg p-3 hairline border">
+                  <div className="text-xs text-muted-foreground">Ответ бота</div>
+                  <div className="font-semibold mono text-primary">~2 сек</div>
                 </div>
-                <div className="text-xs">
-                  <div className="font-semibold">Среднее время ответа в чате — 4 секунды</div>
-                  <div className="text-muted-foreground">Замер на проде у клиента, апрель 2026</div>
+                <div className="bg-background/80 backdrop-blur rounded-lg p-3 hairline border">
+                  <div className="text-xs text-muted-foreground">Закрытие лидов</div>
+                  <div className="font-semibold mono">+34%</div>
+                </div>
+                <div className="bg-background/80 backdrop-blur rounded-lg p-3 hairline border">
+                  <div className="text-xs text-muted-foreground">Запуск</div>
+                  <div className="font-semibold mono">14 дней</div>
                 </div>
               </div>
-            </div>
-
-            {/* Stats card */}
-            <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl border border-border bg-card p-3">
-              {[
-                { v: "14 дн.", l: "до пилота" },
-                { v: "+34%", l: "конверсия в лид" },
-                { v: "−52%", l: "нагрузка 1-й линии" },
-              ].map((s) => (
-                <div key={s.l} className="px-2 py-1.5 text-center">
-                  <div className="font-mono text-lg font-bold text-primary">{s.v}</div>
-                  <div className="text-[11px] leading-tight text-muted-foreground">{s.l}</div>
-                </div>
-              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* PROOF / REVIEWS */}
-      <section className="border-b border-border py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+      {/* PROOF */}
+      <section className="border-b hairline">
+        <div className="container py-12 grid md:grid-cols-4 gap-8">
+          <Stat k="Проектов внедрено" v="47" />
+          <Stat k="Клиентов в СПб" v="22" />
+          <Stat k="Средний срок пилота" v="14 дней" />
+          <Stat k="Оценка на Яндексе" v="4.9 / 5" />
+        </div>
+      </section>
+
+      {/* REVIEWS */}
+      <section className="border-b hairline">
+        <div className="container py-16 lg:py-20">
+          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
             <div>
-              <div className="font-mono text-xs uppercase tracking-widest text-primary">01 · Доверие</div>
-              <h2 className="mt-2 text-3xl font-bold md:text-4xl">Отзывы клиентов</h2>
+              <div className="text-xs uppercase tracking-widest text-primary mono mb-2">Отзывы</div>
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Что говорят клиенты</h2>
             </div>
-            <p className="max-w-md text-sm text-muted-foreground">
-              Подтверждённые отзывы из карточки на Яндекс Картах и личных кабинетов клиентов.
-            </p>
+            <a href="https://yandex.ru/maps" target="_blank" rel="noreferrer" className="text-sm text-muted-foreground hover:text-foreground">
+              Все 38 отзывов на Яндекс.Картах →
+            </a>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {reviews.map((r) => (
-              <article key={r.name} className="rounded-2xl border border-border bg-card p-6 transition hover:border-primary/30">
-                <div className="mb-3 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                  ))}
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { n: "Анна К.", c: "Розничная сеть", t: "За 12 дней подключили бота к AmoCRM. Половину рутины поддержки забрал на себя — менеджеры дышат." },
+              { n: "Дмитрий В.", c: "B2B-сервис", t: "Пилот окупился за месяц. Прозрачно показали метрики, без обещаний «миллиона лидов»." },
+              { n: "Игорь М.", c: "Логистика", t: "Подключили ИИ-ассистента к 1С и Telegram. Заявки обрабатываются ночью без оператора." },
+            ].map((r, i) => (
+              <div key={i} className="rounded-2xl bg-elevated hairline border p-6 space-y-4">
+                <div className="text-amber-400 text-sm">★★★★★</div>
+                <p className="text-sm leading-relaxed text-foreground/90">«{r.t}»</p>
+                <div className="pt-3 border-t hairline">
+                  <div className="text-sm font-medium">{r.n}</div>
+                  <div className="text-xs text-muted-foreground">{r.c}</div>
                 </div>
-                <p className="text-sm leading-relaxed text-foreground/90">«{r.text}»</p>
-                <div className="mt-5 border-t border-border pt-4 text-xs">
-                  <div className="font-semibold">{r.name}</div>
-                  <div className="text-muted-foreground">{r.role}</div>
-                </div>
-              </article>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* SERVICES */}
-      <section id="services" className="border-b border-border py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="mb-10">
-            <div className="font-mono text-xs uppercase tracking-widest text-primary">02 · Услуги</div>
-            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Что мы делаем</h2>
+      <section id="services" className="border-b hairline">
+        <div className="container py-16 lg:py-20 grid lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-5 space-y-6">
+            <div className="text-xs uppercase tracking-widest text-primary mono">Услуги</div>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Что мы делаем</h2>
+            <p className="text-muted-foreground">Работаем с продажами и поддержкой. Не делаем «ИИ ради ИИ» — каждое решение должно сокращать время или деньги.</p>
+            <div className="rounded-2xl overflow-hidden hairline border">
+              <img src={services} alt="Серверная инфраструктура" loading="lazy"
+                width={1024} height={768} className="w-full h-auto object-cover" />
+            </div>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((s) => (
-              <div key={s.title} className="group relative rounded-2xl border border-border bg-card p-6 transition hover:border-primary/40">
-                <div className="mb-4 grid h-11 w-11 place-items-center rounded-lg bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
-                  <s.icon className="h-5 w-5" />
-                </div>
-                <h3 className="text-lg font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+          <div className="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+            {[
+              { t: "AI-ассистенты для продаж", d: "Квалификация лидов, ответы 24/7, передача тёплых клиентов менеджеру." },
+              { t: "Боты для поддержки", d: "Telegram, WhatsApp, виджет на сайт. Знают вашу базу и регламенты." },
+              { t: "Интеграции CRM / API", d: "AmoCRM, Bitrix24, 1С, нестандартные системы. Без дублирующих окон." },
+              { t: "Нейросотрудники", d: "Расшифровка звонков, авто-задачи, контроль воронки и SLA." },
+              { t: "Аудит процессов", d: "Карта операций, точки боли, оценка экономики ИИ — за 3 дня." },
+              { t: "Сопровождение", d: "Поддержка, обновление промптов, рост качества от месяца к месяцу." },
+            ].map((s, i) => (
+              <div key={i} className="rounded-xl bg-card hairline border p-5 hover:border-primary/40 transition group">
+                <div className="text-xs mono text-muted-foreground mb-3">0{i+1}</div>
+                <div className="font-semibold mb-2 group-hover:text-primary transition">{s.t}</div>
+                <div className="text-sm text-muted-foreground">{s.d}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CASES / BEFORE-AFTER */}
-      <section id="cases" className="border-b border-border py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="mb-10">
-            <div className="font-mono text-xs uppercase tracking-widest text-primary">03 · Кейсы</div>
-            <h2 className="mt-2 text-3xl font-bold md:text-4xl">До и после внедрения</h2>
-          </div>
-
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Case 1 */}
-            <article className="overflow-hidden rounded-2xl border border-border bg-card">
-              <img src={caseSupport} alt="AI-поддержка в мессенджере" loading="lazy" width={1024} height={768} className="aspect-[16/10] w-full object-cover" />
-              <div className="p-6">
-                <div className="mb-2 text-xs font-mono text-primary">Поддержка · SaaS-продукт</div>
-                <h3 className="text-xl font-semibold">AI-первая линия в Telegram и на сайте</h3>
-                <div className="mt-5 grid grid-cols-2 gap-4">
-                  <div className="rounded-lg bg-secondary/60 p-3">
-                    <div className="text-xs text-muted-foreground">Было</div>
-                    <div className="mt-1 font-mono text-base">12 мин · 1-я линия 4 чел.</div>
-                  </div>
-                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
-                    <div className="text-xs text-primary">Стало</div>
-                    <div className="mt-1 font-mono text-base">6 сек · 1 чел. на эскалации</div>
-                  </div>
-                </div>
+      {/* CASE / BEFORE-AFTER */}
+      <section id="cases" className="border-b hairline">
+        <div className="container py-16 lg:py-20">
+          <div className="text-xs uppercase tracking-widest text-primary mono mb-2">Кейс</div>
+          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mb-10">До и после внедрения</h2>
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
+            <div className="rounded-2xl overflow-hidden hairline border">
+              <img src={caseBot} alt="Чат-бот в Telegram" loading="lazy"
+                width={1024} height={1024} className="w-full h-auto object-cover" />
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="rounded-xl bg-card hairline border p-6">
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Было</div>
+                <ul className="space-y-2 text-sm">
+                  <li>· Ответ клиенту — до 4 часов</li>
+                  <li>· 3 менеджера в чатах</li>
+                  <li>· 18% конверсии в заявку</li>
+                  <li>· Ночью — никого</li>
+                </ul>
               </div>
-            </article>
-
-            {/* Case 2 */}
-            <article className="overflow-hidden rounded-2xl border border-border bg-card">
-              <img src={caseSales} alt="AI-квалификация лидов в CRM" loading="lazy" width={1024} height={768} className="aspect-[16/10] w-full object-cover" />
-              <div className="p-6">
-                <div className="mb-2 text-xs font-mono text-primary">Продажи · B2B-услуги</div>
-                <h3 className="text-xl font-semibold">Квалификация лида и передача в amoCRM</h3>
-                <div className="mt-5 grid grid-cols-2 gap-4">
-                  <div className="rounded-lg bg-secondary/60 p-3">
-                    <div className="text-xs text-muted-foreground">Было</div>
-                    <div className="mt-1 font-mono text-base">22% доходимости до КП</div>
-                  </div>
-                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
-                    <div className="text-xs text-primary">Стало</div>
-                    <div className="mt-1 font-mono text-base">56% доходимости до КП</div>
-                  </div>
-                </div>
+              <div className="rounded-xl bg-primary/10 border border-primary/30 p-6">
+                <div className="text-xs uppercase tracking-wider text-primary mb-3">Стало</div>
+                <ul className="space-y-2 text-sm">
+                  <li>· Ответ — за 2 секунды</li>
+                  <li>· 1 менеджер на эскалациях</li>
+                  <li>· 31% конверсии</li>
+                  <li>· 24/7 в любом канале</li>
+                </ul>
               </div>
-            </article>
+              <div className="sm:col-span-2 rounded-xl bg-elevated hairline border p-6">
+                <div className="text-sm text-muted-foreground mb-1">Клиент</div>
+                <div className="font-semibold mb-2">B2B-сервис аренды оборудования, СПб</div>
+                <div className="text-sm text-muted-foreground">Запуск за 11 дней. Окупаемость — 28 дней. Сэкономили 2 ставки операторов.</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* PROCESS + diagram */}
-      <section id="process" className="border-b border-border py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="mb-10">
-            <div className="font-mono text-xs uppercase tracking-widest text-primary">04 · Процесс</div>
-            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Как устроена работа</h2>
-          </div>
-
-          <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-            <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
-              <div className="mb-2 text-xs font-mono text-muted-foreground">Архитектура внедрения</div>
-              <FlowDiagram />
-              <p className="mt-2 text-xs text-muted-foreground">
-                Реактивная схема: данные текут от клиента к ассистенту, обогащаются базой знаний и уходят в CRM с метками.
-              </p>
-            </div>
-
-            <ol className="grid gap-3 sm:grid-cols-2">
-              {process.map((p) => (
-                <li key={p.step} className="rounded-xl border border-border bg-card p-5">
-                  <div className="font-mono text-xs text-primary">{p.step}</div>
-                  <div className="mt-1 text-base font-semibold">{p.title}</div>
-                  <div className="mt-1 text-sm text-muted-foreground">{p.desc}</div>
+      {/* PROCESS with SVG animation */}
+      <section id="process" className="border-b hairline">
+        <div className="container py-16 lg:py-20 grid lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-5 space-y-5">
+            <div className="text-xs uppercase tracking-widest text-primary mono">Процесс</div>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Как идёт пилот</h2>
+            <ol className="space-y-4">
+              {[
+                ["Брифинг", "30 минут. Смотрим воронку, каналы, текущую CRM."],
+                ["Прототип", "3–5 дней. Промпты, сценарии, тестовый бот."],
+                ["Интеграция", "До 14 дней. CRM, API, продакшен."],
+                ["Метрики", "Замер до/после. Решение о масштабировании."],
+              ].map(([t, d], i) => (
+                <li key={i} className="flex gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-primary/15 text-primary grid place-items-center text-sm font-semibold mono shrink-0">0{i+1}</div>
+                  <div>
+                    <div className="font-medium">{t}</div>
+                    <div className="text-sm text-muted-foreground">{d}</div>
+                  </div>
                 </li>
               ))}
             </ol>
+            <div className="rounded-2xl overflow-hidden hairline border mt-6">
+              <img src={processImg} alt="Рабочий процесс команды" loading="lazy"
+                width={1280} height={800} className="w-full h-auto object-cover" />
+            </div>
           </div>
+          <div className="lg:col-span-7">
+            <div className="rounded-2xl bg-elevated hairline border p-6 lg:p-8 sticky top-24">
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-sm font-medium">Архитектура внедрения</div>
+                <div className="text-xs mono text-muted-foreground">live</div>
+              </div>
+              <FlowDiagram />
+              <div className="grid grid-cols-3 gap-3 mt-6 text-center">
+                <div className="rounded-lg bg-background/50 p-3 hairline border">
+                  <div className="text-xs text-muted-foreground">Каналы</div>
+                  <div className="text-sm font-medium mt-1">TG · WA · Web</div>
+                </div>
+                <div className="rounded-lg bg-background/50 p-3 hairline border">
+                  <div className="text-xs text-muted-foreground">CRM</div>
+                  <div className="text-sm font-medium mt-1">Amo · Bitrix · 1C</div>
+                </div>
+                <div className="rounded-lg bg-background/50 p-3 hairline border">
+                  <div className="text-xs text-muted-foreground">Модели</div>
+                  <div className="text-sm font-medium mt-1">GPT · YandexGPT</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          {/* Integrations strip */}
-          <div className="mt-10 overflow-hidden rounded-2xl border border-border">
-            <div className="grid gap-0 md:grid-cols-[1fr_1fr]">
-              <img src={integrations} alt="Интеграции с CRM и сервисами" loading="lazy" width={1024} height={768} className="h-full w-full object-cover" />
-              <div className="bg-card p-6 md:p-8">
-                <div className="font-mono text-xs uppercase tracking-widest text-primary">CRM · API · Телефония</div>
-                <h3 className="mt-2 text-2xl font-semibold">Подключаем к вашим системам</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Bitrix24, amoCRM, 1С, Mango Office, Яндекс Телефония, WhatsApp Business, Telegram, веб-чат. Свои API — через REST или Webhook.
-                </p>
-                <ul className="mt-5 grid grid-cols-2 gap-2 text-sm">
-                  {["Bitrix24", "amoCRM", "1С", "WhatsApp", "Telegram", "Mango Office"].map((i) => (
-                    <li key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> {i}</li>
-                  ))}
-                </ul>
+      {/* TEAM image strip */}
+      <section className="border-b hairline">
+        <div className="container py-16 lg:py-20 grid lg:grid-cols-2 gap-10 items-center">
+          <div className="rounded-2xl overflow-hidden hairline border order-2 lg:order-1">
+            <img src={team} alt="Команда 1Lab AI Studio за работой" loading="lazy"
+              width={1280} height={896} className="w-full h-auto object-cover" />
+          </div>
+          <div className="space-y-5 order-1 lg:order-2">
+            <div className="text-xs uppercase tracking-widest text-primary mono">О студии</div>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Маленькая команда. Глубокая экспертиза.</h2>
+            <p className="text-muted-foreground">Мы не агентство на 100 человек. Каждый проект ведёт инженер, который сам пишет промпты и интеграции. Поэтому быстрее и без потерь смыслов.</p>
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="rounded-xl bg-card hairline border p-4">
+                <div className="text-xs text-muted-foreground">С 2023 года</div>
+                <div className="font-medium mt-1">в нише AI-внедрений</div>
+              </div>
+              <div className="rounded-xl bg-card hairline border p-4">
+                <div className="text-xs text-muted-foreground">Резидент</div>
+                <div className="font-medium mt-1">технопарка СПб</div>
               </div>
             </div>
           </div>
@@ -322,94 +323,84 @@ const Index = () => {
       </section>
 
       {/* PRICE / FORM */}
-      <section id="contact" className="border-b border-border py-16 md:py-20">
-        <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[1fr_1.05fr]">
-          <div>
-            <div className="font-mono text-xs uppercase tracking-widest text-primary">05 · Заявка</div>
-            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Пилот за 2 недели</h2>
-            <p className="mt-3 max-w-md text-muted-foreground">
-              Стоимость пилота — от <span className="font-semibold text-foreground">90 000 ₽</span>. В неё входит: разбор задачи, прототип сценария, подключение к одному каналу и метрики на ваших данных.
-            </p>
-
-            <ul className="mt-6 space-y-3 text-sm">
-              {[
-                "Брифинг и оценка эффекта — бесплатно",
-                "Фиксированная стоимость, без «переоценок»",
-                "Передача всех настроек и доступов вам",
-                "Сопровождение по подписке после пилота",
-              ].map((t) => (
-                <li key={t} className="flex gap-3">
-                  <Check className="mt-0.5 h-5 w-5 flex-none text-primary" />
-                  <span>{t}</span>
+      <section id="price" className="border-b hairline">
+        <div className="container py-16 lg:py-20 grid lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-5 space-y-5">
+            <div className="text-xs uppercase tracking-widest text-primary mono">Стоимость</div>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">Пилот — 15 000 ₽</h2>
+            <p className="text-muted-foreground">Предоплата 50% на старте, остаток — после запуска и приёмки. Без скрытых подписок.</p>
+            <ul className="space-y-3 text-sm">
+              {["Анализ задачи и сценариев","Прототип бота / ассистента","Подключение к одному каналу","Интеграция с одной CRM","Замер метрик до / после"].map((x, i)=> (
+                <li key={i} className="flex gap-3 items-start">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0"/>
+                  <span>{x}</span>
                 </li>
               ))}
             </ul>
-
-            {/* team image */}
-            <img src={team} alt="Команда 1Lab" loading="lazy" width={1024} height={768} className="mt-8 hidden rounded-2xl border border-border object-cover lg:block" />
+            <div className="text-xs text-muted-foreground pt-4 border-t hairline">
+              Полноценное внедрение — от 80 000 ₽. Цену называем после брифа, а не «от».
+            </div>
           </div>
 
-          <form onSubmit={submit} className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-[var(--shadow-card)]">
-            <h3 className="text-xl font-semibold">Оставьте заявку</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Свяжемся в течение часа в рабочее время.</p>
-
-            <div className="mt-6 space-y-4">
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Имя</label>
-                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Как к вам обращаться" />
-              </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Телефон или Telegram</label>
-                <Input value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} placeholder="+7 ___ ___ __ __  /  @username" />
-              </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Задача (необязательно)</label>
-                <Textarea value={form.task} onChange={(e) => setForm({ ...form, task: e.target.value })} placeholder="Например: чат-бот в Telegram + интеграция с amoCRM" rows={4} />
-              </div>
-              <Button type="submit" size="lg" className="w-full font-semibold">
-                Отправить заявку <ArrowRight className="ml-1 h-4 w-4" />
-              </Button>
-              <p className="text-center text-xs text-muted-foreground">
-                Нажимая кнопку, вы соглашаетесь с обработкой персональных данных.
-              </p>
+          <form onSubmit={submit} className="lg:col-span-7 rounded-2xl bg-elevated hairline border p-6 lg:p-8 space-y-5">
+            <div className="font-semibold text-lg">Заявка на пилот</div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <label className="block">
+                <span className="text-xs text-muted-foreground">Имя</span>
+                <input required value={form.name} onChange={e=>setForm({...form, name:e.target.value})}
+                  className="mt-1.5 w-full bg-background hairline border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition"
+                  placeholder="Алексей" />
+              </label>
+              <label className="block">
+                <span className="text-xs text-muted-foreground">Telegram или телефон</span>
+                <input required value={form.contact} onChange={e=>setForm({...form, contact:e.target.value})}
+                  className="mt-1.5 w-full bg-background hairline border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition"
+                  placeholder="@nickname / +7…" />
+              </label>
             </div>
+            <label className="block">
+              <span className="text-xs text-muted-foreground">Коротко о задаче</span>
+              <textarea value={form.task} onChange={e=>setForm({...form, task:e.target.value})}
+                rows={4}
+                className="mt-1.5 w-full bg-background hairline border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-primary transition resize-none"
+                placeholder="Например: бот в Telegram для квалификации лидов, интеграция с AmoCRM" />
+            </label>
+            <button type="submit"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition">
+              Отправить заявку
+            </button>
+            <div className="text-xs text-muted-foreground">Ответим в течение 2 часов в рабочее время. Никаких рассылок.</div>
           </form>
         </div>
       </section>
 
       {/* CONTACTS */}
-      <section className="py-16 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid gap-6 md:grid-cols-3">
-            <a href="mailto:1lab@1true.ru" className="group rounded-2xl border border-border bg-card p-6 transition hover:border-primary/40">
-              <Mail className="h-5 w-5 text-primary" />
-              <div className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Email</div>
-              <div className="mt-1 font-mono text-lg group-hover:text-primary">1lab@1true.ru</div>
-            </a>
-            <a href="https://t.me/one_lab" target="_blank" rel="noopener noreferrer" className="group rounded-2xl border border-border bg-card p-6 transition hover:border-primary/40">
-              <Send className="h-5 w-5 text-primary" />
-              <div className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Telegram</div>
-              <div className="mt-1 font-mono text-lg group-hover:text-primary">@one_lab</div>
-            </a>
-            <div className="rounded-2xl border border-border bg-card p-6">
-              <MapPin className="h-5 w-5 text-primary" />
-              <div className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Офис</div>
-              <div className="mt-1 text-base font-semibold">Москва, ул. Тверская, 7</div>
-              <div className="mt-1 text-xs text-muted-foreground">Пн–Пт · 10:00–19:00</div>
-            </div>
+      <section id="contacts">
+        <div className="container py-16 lg:py-20 grid md:grid-cols-3 gap-8">
+          <div>
+            <div className="text-xs uppercase tracking-widest text-primary mono mb-3">Адрес</div>
+            <div className="font-medium">Санкт-Петербург</div>
+            <div className="text-muted-foreground text-sm">ул. Гороховая, 7</div>
+            <div className="text-muted-foreground text-sm mt-1">Пн–Пт · 10:00–19:00</div>
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-widest text-primary mono mb-3">Связь</div>
+            <a href="mailto:1lab@1true.ru" className="block font-medium hover:text-primary transition">1lab@1true.ru</a>
+            <a href="https://t.me/one_lab" target="_blank" rel="noreferrer" className="block text-muted-foreground text-sm mt-1 hover:text-foreground">Telegram: @one_lab</a>
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-widest text-primary mono mb-3">Юридически</div>
+            <div className="text-sm text-muted-foreground">ИП · работаем по договору и счёту</div>
+            <div className="text-sm text-muted-foreground mt-1">Закрывающие документы — в ЭДО или почтой</div>
+          </div>
+        </div>
+        <div className="border-t hairline">
+          <div className="container py-6 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
+            <div>© {new Date().getFullYear()} 1Lab AI Studio</div>
+            <div className="mono">made in Saint Petersburg</div>
           </div>
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-border py-8">
-        <div className="container mx-auto flex flex-col items-center justify-between gap-3 px-4 text-xs text-muted-foreground md:flex-row">
-          <div>© 2026 1Lab AI Studio · Внедрение ИИ для бизнеса</div>
-          <div className="flex items-center gap-4">
-            <a href="tel:+74951234567" className="flex items-center gap-1.5 hover:text-foreground"><Phone className="h-3.5 w-3.5" /> +7 (495) 123-45-67</a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
