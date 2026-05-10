@@ -58,6 +58,22 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <section className="webstudio-visual-hero" style={{ padding: "32px 24px", background: "#0b0f17", color: "#f8fafc" }}>
+        <div style={{ maxWidth: "1120px", margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(260px,.55fr)", gap: "22px", alignItems: "center" }}>
+          <img src={new URL("../assets/webstudio-external-0.jpg", import.meta.url).href} alt={"1Lab AI Studio"} style={{ width: "100%", aspectRatio: "16 / 9", objectFit: "cover", borderRadius: "16px", display: "block" }} />
+          <svg viewBox="0 0 520 180" role="img" aria-label="Website workflow preview" style={{ width: "100%", height: "auto", display: "block" }}>
+            <defs><linearGradient id="ws-react-g" x1="0" x2="1"><stop offset="0" stopColor="#55d6be" /><stop offset="1" stopColor="#ffcf5a" /></linearGradient></defs>
+            <rect x="1" y="1" width="518" height="178" rx="18" fill="#121722" stroke="#273144" />
+            <path d="M90 92H210C245 92 245 48 280 48H430M90 92H210C245 92 245 136 280 136H430" fill="none" stroke="url(#ws-react-g)" strokeWidth="4" strokeLinecap="round" strokeDasharray="10 12" />
+            <circle cx="90" cy="92" r="32" fill="#55d6be" opacity=".75" />
+            <circle cx="280" cy="48" r="24" fill="#ffcf5a" opacity=".75" />
+            <circle cx="280" cy="136" r="24" fill="#55d6be" opacity=".65" />
+            <rect x="388" y="30" width="74" height="36" rx="8" fill="#0b0f17" stroke="#55d6be" />
+            <rect x="388" y="118" width="74" height="36" rx="8" fill="#0b0f17" stroke="#ffcf5a" />
+          </svg>
+        </div>
+      </section>
+
       {/* NAV */}
       <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
         <div className="container flex h-16 items-center justify-between">
