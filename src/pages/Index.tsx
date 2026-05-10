@@ -1,8 +1,8 @@
-import hero from "@/assets/hero.jpg";
-import caseBot from "@/assets/case-bot.jpg";
-import services from "@/assets/services.jpg";
-import team from "@/assets/team.jpg";
-import processImg from "@/assets/process.jpg";
+const hero = new URL("../assets/webstudio-hero.jpg", import.meta.url).href;
+const caseBot = new URL("../assets/webstudio-casebot.jpg", import.meta.url).href;
+const services = new URL("../assets/webstudio-services.jpg", import.meta.url).href;
+const team = new URL("../assets/webstudio-team.jpg", import.meta.url).href;
+const processImg = new URL("../assets/webstudio-processimg.jpg", import.meta.url).href;
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 
@@ -80,7 +80,7 @@ const Index = () => {
           <div className="lg:col-span-6 space-y-7">
             <div className="inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-secondary text-muted-foreground hairline border">
               <span className="w-1.5 h-1.5 rounded-full bg-primary pulse-dot" />
-              Санкт-Петербург · ул. Гороховая, 7
+              Москва · ул. Тверская, 7
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-balance">
               Внедряем ИИ <br />
@@ -104,7 +104,7 @@ const Index = () => {
                   <span className="text-amber-400">★★★★★</span>
                   <span className="text-muted-foreground">· 38 отзывов на Яндекс.Картах</span>
                 </div>
-                <div className="text-xs text-muted-foreground mt-0.5">Подтверждённая организация · в топ-3 по запросу «AI студия СПб»</div>
+                <div className="text-xs text-muted-foreground mt-0.5">Подтверждённая организация · в топ-3 по запросу «AI студия Москва»</div>
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@ const Index = () => {
       <section className="border-b hairline">
         <div className="container py-12 grid md:grid-cols-4 gap-8">
           <Stat k="Проектов внедрено" v="47" />
-          <Stat k="Клиентов в СПб" v="22" />
+          <Stat k="Клиентов в Москва" v="22" />
           <Stat k="Средний срок пилота" v="14 дней" />
           <Stat k="Оценка на Яндексе" v="4.9 / 5" />
         </div>
@@ -236,7 +236,7 @@ const Index = () => {
               </div>
               <div className="sm:col-span-2 rounded-xl bg-elevated hairline border p-6">
                 <div className="text-sm text-muted-foreground mb-1">Клиент</div>
-                <div className="font-semibold mb-2">B2B-сервис аренды оборудования, СПб</div>
+                <div className="font-semibold mb-2">B2B-сервис аренды оборудования, Москва</div>
                 <div className="text-sm text-muted-foreground">Запуск за 11 дней. Окупаемость — 28 дней. Сэкономили 2 ставки операторов.</div>
               </div>
             </div>
@@ -315,7 +315,7 @@ const Index = () => {
               </div>
               <div className="rounded-xl bg-card hairline border p-4">
                 <div className="text-xs text-muted-foreground">Резидент</div>
-                <div className="font-medium mt-1">технопарка СПб</div>
+                <div className="font-medium mt-1">технопарка Москва</div>
               </div>
             </div>
           </div>
@@ -379,7 +379,7 @@ const Index = () => {
         <div className="container py-16 lg:py-20 grid md:grid-cols-3 gap-8">
           <div>
             <div className="text-xs uppercase tracking-widest text-primary mono mb-3">Адрес</div>
-            <div className="font-medium">Санкт-Петербург</div>
+            <div className="font-medium">??????</div>
             <div className="text-muted-foreground text-sm">ул. Гороховая, 7</div>
             <div className="text-muted-foreground text-sm mt-1">Пн–Пт · 10:00–19:00</div>
           </div>
@@ -401,7 +401,15 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </div>
+      <section className="webstudio-revision-block" style={{ padding: "72px 24px", background: "#f8fafc", color: "#111827" }}>
+        <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
+          <p style={{ margin: "0 0 10px", fontSize: "13px", textTransform: "uppercase", letterSpacing: ".08em", color: "#64748b" }}>Обновление сайта</p>
+          <h2 style={{ margin: "0 0 16px", fontSize: "32px", lineHeight: 1.1 }}>{"Как нас найти"}</h2>
+          <p style={{ margin: "0 0 24px", maxWidth: "760px", fontSize: "18px", lineHeight: 1.55, color: "#334155" }}>{"Добавьте блок с адресом студии, виджет Яндекс карт и контакты: Telegram @one_lab, email 1lab@1true.ru."}</p>
+          <iframe title="Яндекс Карта" src="https://yandex.ru/map-widget/v1/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D1%83%D0%BB.%20%D0%A2%D0%B2%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%2C%207&amp;z=16" loading="lazy" style={{ width: "100%", height: "360px", border: 0, borderRadius: "12px" }} />
+        </div>
+      </section>
+</div>
   );
 };
 
