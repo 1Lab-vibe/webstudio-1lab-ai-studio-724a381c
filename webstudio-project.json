@@ -1,7 +1,7 @@
 {
   "leadId": "724a381c-02af-42d3-b115-aca19cfc1bfe",
   "businessName": "1Lab AI Studio",
-  "lovableProjectId": "1e950e93-21db-40a9-92b9-41fda7bb8d34",
   "publicUrl": "https://webstudio.1true.ru/projects/1lab-ai-studio-724a381c/",
-  "publishedToGitHubAt": "2026-05-07T21:45:57.895Z"
+  "revisionText": "Добавьте блок с адресом студии, виджет Яндекс карт и контакты: Telegram @one_lab, email 1lab@1true.ru.",
+  "publishedToGitHubAt": "2026-05-10T11:05:42.612Z"
 }
