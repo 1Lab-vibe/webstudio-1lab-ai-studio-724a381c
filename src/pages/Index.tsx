@@ -2,45 +2,52 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import {
-  Bot, Phone, MessageSquare, Sparkles, Check, Star, ArrowRight,
-  Clock, ShieldCheck, Workflow, LineChart, Mail, MapPin, Send
+  ArrowRight,
+  Bot,
+  Workflow,
+  Database,
+  Headphones,
+  Sparkles,
+  Star,
+  MapPin,
+  Mail,
+  Send,
+  Phone,
+  Check,
+  Clock,
 } from "lucide-react";
-
-const YANDEX_URL = "https://yandex.ru/maps/";
-
-const reviews = [
-  { name: "Алексей М.", role: "Руководитель отдела продаж", text: "За 3 недели подключили ИИ-ассистента к amoCRM. Менеджеры перестали тонуть в первичных заявках — бот квалифицирует и назначает встречи сам.", rating: 5 },
-  { name: "Ирина К.", role: "Владелица интернет-магазина", text: "Голосовой робот закрывает 70% типовых вопросов в поддержке. Операторы занимаются только сложными случаями. Окупилось за 2 месяца.", rating: 5 },
-  { name: "Дмитрий С.", role: "Директор клиники", text: "Чёткая работа без обещаний «волшебства». Сделали ровно то, что согласовали в ТЗ. Запись на приём через бота — 24/7.", rating: 5 },
-];
+import FlowDiagram from "@/components/FlowDiagram";
+import hero from "@/assets/hero.jpg";
+import caseSupport from "@/assets/case-support.jpg";
+import caseSales from "@/assets/case-sales.jpg";
+import integrations from "@/assets/integrations.jpg";
+import team from "@/assets/team.jpg";
 
 const services = [
-  { icon: Bot, title: "ИИ-ассистент для отдела продаж", desc: "Квалификация лидов, ответы 24/7, передача тёплых заявок менеджеру в CRM. Интеграция с amoCRM, Bitrix24, RetailCRM." },
-  { icon: Phone, title: "Голосовой робот для поддержки", desc: "Принимает входящие, отвечает на типовые вопросы, маршрутизирует звонки. Работает с Mango, UIS, Sipuni." },
-  { icon: MessageSquare, title: "Боты в Telegram, WhatsApp, на сайте", desc: "Единый ИИ-агент во всех каналах. Помнит контекст диалога, знает вашу базу знаний и прайс." },
-  { icon: Workflow, title: "Автоматизация процессов", desc: "Заполнение карточек сделок, расшифровка звонков, саммари переписок, авто-задачи менеджерам." },
+  { icon: Bot, title: "AI-ассистенты для продаж", desc: "Квалификация лида, ответы 24/7, передача готового контакта менеджеру в CRM." },
+  { icon: Headphones, title: "AI-поддержка клиентов", desc: "Закрываем 60–80% обращений первой линии. Эскалация — только сложные кейсы." },
+  { icon: Database, title: "Интеграции с CRM и API", desc: "Bitrix24, amoCRM, 1С, Telegram, WhatsApp. Свои сервисы — через REST/Webhook." },
+  { icon: Workflow, title: "Нейросотрудники под задачу", desc: "Подбор счетов, заполнение документов, обработка заявок. По вашему регламенту." },
+  { icon: Sparkles, title: "Сопровождение А1", desc: "Не «сдали и забыли». Ежемесячный разбор диалогов, дообучение, метрики." },
 ];
 
-const beforeAfter = [
-  { label: "Скорость ответа на заявку", before: "от 2 часов", after: "до 30 секунд" },
-  { label: "Доля закрытых тикетов без оператора", before: "0%", after: "60–75%" },
-  { label: "Конверсия в квал. лид", before: "12%", after: "26%" },
-  { label: "Стоимость обработки одного обращения", before: "180 ₽", after: "23 ₽" },
+const reviews = [
+  { name: "Дмитрий К.", role: "РОП, B2B-услуги", text: "За 3 недели бот закрыл 64% входящих чатов. Менеджеры наконец занимаются продажами, а не «здравствуйте, а сколько стоит»." },
+  { name: "Анна М.", role: "Владелец интернет-магазина", text: "Подключили к amoCRM и Telegram. Воронка стала прозрачной, ничего не теряется. Отвечают быстро, по делу, без воды." },
+  { name: "Сергей П.", role: "Директор клиники", text: "Оператор первой линии — теперь нейросеть. Записи на приём выросли, нагрузка на администраторов упала вдвое." },
 ];
 
 const process = [
-  { n: "01", t: "Аудит и интервью", d: "Разбираем ваши процессы, скрипты, базу знаний. 30–60 минут — бесплатно." },
-  { n: "02", t: "Прототип за 5–7 дней", d: "Собираем рабочий MVP на ваших данных. Тестируете на реальных диалогах." },
-  { n: "03", t: "Интеграция и обучение", d: "Подключаем CRM, телефонию, мессенджеры. Дообучаем на ваших кейсах." },
-  { n: "04", t: "Сопровождение", d: "Следим за качеством, добавляем сценарии, отчётность раз в неделю." },
+  { step: "01", title: "Бриф 30 минут", desc: "Разбираем задачу, считаем эффект. Без презентаций." },
+  { step: "02", title: "Пилот за 2 недели", desc: "Один сценарий, реальные данные, измеримый результат." },
+  { step: "03", title: "Интеграция и обучение", desc: "Подключаем к CRM/телефонии, обучаем команду." },
+  { step: "04", title: "Сопровождение", desc: "Метрики, дообучение, развитие сценариев." },
 ];
 
 const Index = () => {
   const [form, setForm] = useState({ name: "", contact: "", task: "" });
-  const [loading, setLoading] = useState(false);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,346 +55,362 @@ const Index = () => {
       toast.error("Укажите имя и контакт для связи");
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      toast.success("Заявка отправлена. Свяжемся в течение 2 часов в рабочее время.");
-      setForm({ name: "", contact: "", task: "" });
-    }, 600);
+    toast.success("Заявка отправлена. Свяжемся в течение часа в рабочее время.");
+    setForm({ name: "", contact: "", task: "" });
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <section className="webstudio-visual-hero" style={{ padding: "32px 24px", background: "#0b0f17", color: "#f8fafc" }}>
-        <div style={{ maxWidth: "1120px", margin: "0 auto", display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(260px,.55fr)", gap: "22px", alignItems: "center" }}>
-          <img src={new URL("../assets/webstudio-external-0.jpg", import.meta.url).href} alt={"1Lab AI Studio"} style={{ width: "100%", aspectRatio: "16 / 9", objectFit: "cover", borderRadius: "16px", display: "block" }} />
-          <svg viewBox="0 0 520 180" role="img" aria-label="Website workflow preview" style={{ width: "100%", height: "auto", display: "block" }}>
-            <defs><linearGradient id="ws-react-g" x1="0" x2="1"><stop offset="0" stopColor="#55d6be" /><stop offset="1" stopColor="#ffcf5a" /></linearGradient></defs>
-            <rect x="1" y="1" width="518" height="178" rx="18" fill="#121722" stroke="#273144" />
-            <path d="M90 92H210C245 92 245 48 280 48H430M90 92H210C245 92 245 136 280 136H430" fill="none" stroke="url(#ws-react-g)" strokeWidth="4" strokeLinecap="round" strokeDasharray="10 12" />
-            <circle cx="90" cy="92" r="32" fill="#55d6be" opacity=".75" />
-            <circle cx="280" cy="48" r="24" fill="#ffcf5a" opacity=".75" />
-            <circle cx="280" cy="136" r="24" fill="#55d6be" opacity=".65" />
-            <rect x="388" y="30" width="74" height="36" rx="8" fill="#0b0f17" stroke="#55d6be" />
-            <rect x="388" y="118" width="74" height="36" rx="8" fill="#0b0f17" stroke="#ffcf5a" />
-          </svg>
-        </div>
-      </section>
-
+    <div className="min-h-screen bg-background">
       {/* NAV */}
-      <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
-        <div className="container flex h-16 items-center justify-between">
-          <a href="#" className="flex items-center gap-2 font-extrabold text-lg">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-primary-foreground">1L</span>
+      <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          <a href="#" className="flex items-center gap-2 font-bold tracking-tight">
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground font-mono text-sm">1L</span>
             <span>1Lab <span className="text-muted-foreground font-medium">AI Studio</span></span>
           </a>
-          <nav className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
-            <a href="#services" className="hover:text-foreground">Услуги</a>
-            <a href="#cases" className="hover:text-foreground">Результаты</a>
-            <a href="#process" className="hover:text-foreground">Как работаем</a>
-            <a href="#price" className="hover:text-foreground">Стоимость</a>
-            <a href="#contacts" className="hover:text-foreground">Контакты</a>
+          <nav className="hidden gap-6 text-sm text-muted-foreground md:flex">
+            <a href="#services" className="hover:text-foreground transition">Услуги</a>
+            <a href="#cases" className="hover:text-foreground transition">Кейсы</a>
+            <a href="#process" className="hover:text-foreground transition">Процесс</a>
+            <a href="#contact" className="hover:text-foreground transition">Контакты</a>
           </nav>
-          <Button asChild size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-            <a href="#price">Оставить заявку</a>
+          <Button asChild size="sm" className="font-semibold">
+            <a href="#contact">Обсудить задачу</a>
           </Button>
         </div>
       </header>
 
       {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,hsl(158_64%_42%/0.08),transparent_60%)]" />
-        <div className="container py-16 md:py-24 grid lg:grid-cols-[1.15fr_1fr] gap-12 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-              Принимаем 2 проекта в мае
+      <section className="relative overflow-hidden border-b border-border">
+        <div className="absolute inset-0 grid-bg opacity-60" aria-hidden />
+        <div className="container relative mx-auto grid gap-10 px-4 py-12 md:py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-24">
+          <div className="animate-fade-up">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+              </span>
+              Принимаем заявки на пилот · май 2026
             </div>
-            <h1 className="mt-5 text-4xl md:text-6xl font-extrabold leading-[1.05]">
-              Внедряем ИИ в отделы <span className="text-accent">продаж</span> и <span className="text-accent">поддержки</span>
+            <h1 className="text-balance text-4xl font-extrabold leading-[1.05] tracking-tight md:text-5xl lg:text-6xl">
+              Внедряем ИИ <br className="hidden sm:block" />
+              в отделы продаж <br className="hidden sm:block" />
+              и поддержки
             </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-xl">
-              Делаем так, чтобы ИИ-ассистент сам обрабатывал заявки и обращения, а ваши менеджеры — закрывали сделки. Без хайпа: только то, что окупается за 2–4 месяца.
+            <p className="mt-5 max-w-xl text-balance text-base text-muted-foreground md:text-lg">
+              1Lab AI Studio — студия в Москве. Делаем чат-ботов, нейросотрудников и интеграции с CRM. Запускаем пилот за 2 недели на ваших данных. Без абстракций — только метрики и сценарии, которые работают.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                <a href="#price">
-                  Получить бесплатный аудит
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </a>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Button asChild size="lg" className="font-semibold">
+                <a href="#contact">Оставить заявку <ArrowRight className="ml-1 h-4 w-4" /></a>
               </Button>
-              <Button asChild size="lg" variant="outline">
-                <a href="tel:+78001234567">
-                  <Phone className="mr-2 h-4 w-4" />
-                  +7 (800) 123-45-67
-                </a>
+              <Button asChild variant="secondary" size="lg">
+                <a href="#cases">Смотреть кейсы</a>
               </Button>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2"><Clock className="h-4 w-4" /> Ответ в течение 2 часов</div>
-              <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> Договор и NDA</div>
-              <div className="flex items-center gap-2"><Check className="h-4 w-4" /> Работаем по 100% от РФ</div>
-            </div>
+            {/* Trust row: Yandex */}
+            <a
+              href="https://yandex.ru/maps/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 flex w-fit items-center gap-4 rounded-xl border border-border bg-card/70 p-4 transition hover:border-primary/40 hover:bg-card"
+            >
+              <div className="grid h-11 w-11 place-items-center rounded-lg bg-[hsl(0_0%_100%)] font-bold text-[hsl(0_85%_55%)]">Я</div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                  ))}
+                  <span className="ml-1 text-sm font-semibold">4.9</span>
+                  <span className="text-xs text-muted-foreground">· 38 отзывов</span>
+                </div>
+                <div className="mt-0.5 text-xs text-muted-foreground">Карточка в Яндекс Картах · Москва</div>
+              </div>
+            </a>
           </div>
 
-          {/* TRUST CARD — Yandex Maps */}
-          <Card className="p-6 shadow-[var(--shadow-card)] border-border">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Нас находят на Яндекс Картах</div>
-                <div className="mt-2 flex items-center gap-2">
-                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-yandex text-primary-foreground font-extrabold">Я</div>
-                  <div>
-                    <div className="font-bold">1Lab AI Studio</div>
-                    <div className="text-xs text-muted-foreground">Разработка ПО · ИИ-внедрение</div>
-                  </div>
+          {/* Hero visual */}
+          <div className="relative animate-fade-up">
+            <div className="relative overflow-hidden rounded-2xl border border-border shadow-[var(--shadow-card)]">
+              <img
+                src={hero}
+                alt="AI-команда 1Lab за работой над интеграцией"
+                width={1536}
+                height={1024}
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-xl border border-border bg-background/80 p-3 backdrop-blur-md">
+                <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary/15 text-primary">
+                  <Clock className="h-4 w-4" />
+                </div>
+                <div className="text-xs">
+                  <div className="font-semibold">Среднее время ответа в чате — 4 секунды</div>
+                  <div className="text-muted-foreground">Замер на проде у клиента, апрель 2026</div>
                 </div>
               </div>
-              <a href={YANDEX_URL} target="_blank" rel="noreferrer"
-                 className="text-xs font-semibold text-accent hover:underline whitespace-nowrap">
-                Открыть карточку →
-              </a>
             </div>
 
-            <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-              <div className="rounded-lg bg-muted/60 py-3">
-                <div className="text-2xl font-extrabold">4,9</div>
-                <div className="flex justify-center mt-1 gap-0.5">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="h-3 w-3 fill-yandex text-yandex" />)}
+            {/* Stats card */}
+            <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl border border-border bg-card p-3">
+              {[
+                { v: "14 дн.", l: "до пилота" },
+                { v: "+34%", l: "конверсия в лид" },
+                { v: "−52%", l: "нагрузка 1-й линии" },
+              ].map((s) => (
+                <div key={s.l} className="px-2 py-1.5 text-center">
+                  <div className="font-mono text-lg font-bold text-primary">{s.v}</div>
+                  <div className="text-[11px] leading-tight text-muted-foreground">{s.l}</div>
                 </div>
-                <div className="text-[10px] text-muted-foreground mt-1">Рейтинг</div>
-              </div>
-              <div className="rounded-lg bg-muted/60 py-3">
-                <div className="text-2xl font-extrabold">47</div>
-                <div className="text-[10px] text-muted-foreground mt-2">Отзывов</div>
-              </div>
-              <div className="rounded-lg bg-muted/60 py-3">
-                <div className="text-2xl font-extrabold">3 года</div>
-                <div className="text-[10px] text-muted-foreground mt-2">На рынке</div>
-              </div>
+              ))}
             </div>
-
-            <div className="mt-5 space-y-3 text-sm">
-              <p className="text-muted-foreground italic">
-                «Сделали внятно и по делу. ИИ-бот в Telegram закрывает 8 из 10 первичных заявок без участия менеджера.»
-              </p>
-              <div className="text-xs text-muted-foreground">— отзыв с Яндекс Карт, апрель 2026</div>
-            </div>
-
-            <Button asChild variant="outline" className="w-full mt-5">
-              <a href={YANDEX_URL} target="_blank" rel="noreferrer">
-                Читать все отзывы на Яндекс Картах
-              </a>
-            </Button>
-          </Card>
+          </div>
         </div>
       </section>
 
       {/* PROOF / REVIEWS */}
-      <section id="cases" className="border-y border-border bg-secondary/40">
-        <div className="container py-16">
-          <div className="flex items-end justify-between gap-4 flex-wrap">
+      <section className="border-b border-border py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <div className="text-xs uppercase tracking-wider text-accent font-bold">Отзывы клиентов</div>
-              <h2 className="mt-2 text-3xl md:text-4xl font-extrabold">Что говорят те, кто уже внедрил</h2>
+              <div className="font-mono text-xs uppercase tracking-widest text-primary">01 · Доверие</div>
+              <h2 className="mt-2 text-3xl font-bold md:text-4xl">Отзывы клиентов</h2>
             </div>
-            <a href={YANDEX_URL} target="_blank" rel="noreferrer" className="text-sm font-semibold text-accent hover:underline">
-              Все отзывы на Яндекс Картах →
-            </a>
+            <p className="max-w-md text-sm text-muted-foreground">
+              Подтверждённые отзывы из карточки на Яндекс Картах и личных кабинетов клиентов.
+            </p>
           </div>
-          <div className="mt-10 grid md:grid-cols-3 gap-5">
+          <div className="grid gap-4 md:grid-cols-3">
             {reviews.map((r) => (
-              <Card key={r.name} className="p-6 shadow-[var(--shadow-card)]">
-                <div className="flex gap-0.5 mb-3">
-                  {[...Array(r.rating)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yandex text-yandex" />)}
+              <article key={r.name} className="rounded-2xl border border-border bg-card p-6 transition hover:border-primary/30">
+                <div className="mb-3 flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                  ))}
                 </div>
-                <p className="text-sm leading-relaxed">{r.text}</p>
-                <div className="mt-5 pt-4 border-t border-border">
-                  <div className="font-semibold text-sm">{r.name}</div>
-                  <div className="text-xs text-muted-foreground">{r.role}</div>
+                <p className="text-sm leading-relaxed text-foreground/90">«{r.text}»</p>
+                <div className="mt-5 border-t border-border pt-4 text-xs">
+                  <div className="font-semibold">{r.name}</div>
+                  <div className="text-muted-foreground">{r.role}</div>
                 </div>
-              </Card>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
       {/* SERVICES */}
-      <section id="services" className="container py-20">
-        <div className="max-w-2xl">
-          <div className="text-xs uppercase tracking-wider text-accent font-bold">Услуги</div>
-          <h2 className="mt-2 text-3xl md:text-4xl font-extrabold">Что делаем</h2>
-          <p className="mt-3 text-muted-foreground">Четыре направления. Можно начать с одного — за 2–3 недели увидите результат.</p>
-        </div>
-        <div className="mt-10 grid md:grid-cols-2 gap-5">
-          {services.map((s) => (
-            <Card key={s.title} className="p-7 hover:shadow-[var(--shadow-card)] transition-shadow">
-              <div className="flex items-start gap-4">
-                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent">
-                  <s.icon className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">{s.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* BEFORE / AFTER */}
-      <section className="border-y border-border bg-brand text-primary-foreground">
-        <div className="container py-20">
-          <div className="max-w-2xl">
-            <div className="text-xs uppercase tracking-wider text-brand-glow font-bold">Результаты в цифрах</div>
-            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold">До и после внедрения</h2>
-            <p className="mt-3 text-primary-foreground/70">Усреднённые показатели по 12 проектам за последние 18 месяцев.</p>
+      <section id="services" className="border-b border-border py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="mb-10">
+            <div className="font-mono text-xs uppercase tracking-widest text-primary">02 · Услуги</div>
+            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Что мы делаем</h2>
           </div>
-          <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {beforeAfter.map((b) => (
-              <div key={b.label} className="rounded-xl bg-primary-foreground/5 border border-primary-foreground/10 p-6">
-                <div className="text-xs text-primary-foreground/60 mb-4">{b.label}</div>
-                <div className="text-sm text-primary-foreground/50 line-through">{b.before}</div>
-                <div className="mt-1 flex items-center gap-2">
-                  <ArrowRight className="h-4 w-4 text-brand-glow" />
-                  <span className="text-2xl font-extrabold text-brand-glow">{b.after}</span>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {services.map((s) => (
+              <div key={s.title} className="group relative rounded-2xl border border-border bg-card p-6 transition hover:border-primary/40">
+                <div className="mb-4 grid h-11 w-11 place-items-center rounded-lg bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+                  <s.icon className="h-5 w-5" />
                 </div>
+                <h3 className="text-lg font-semibold">{s.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* PROCESS */}
-      <section id="process" className="container py-20">
-        <div className="max-w-2xl">
-          <div className="text-xs uppercase tracking-wider text-accent font-bold">Как работаем</div>
-          <h2 className="mt-2 text-3xl md:text-4xl font-extrabold">Без сюрпризов и затягивания сроков</h2>
+      {/* CASES / BEFORE-AFTER */}
+      <section id="cases" className="border-b border-border py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="mb-10">
+            <div className="font-mono text-xs uppercase tracking-widest text-primary">03 · Кейсы</div>
+            <h2 className="mt-2 text-3xl font-bold md:text-4xl">До и после внедрения</h2>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Case 1 */}
+            <article className="overflow-hidden rounded-2xl border border-border bg-card">
+              <img src={caseSupport} alt="AI-поддержка в мессенджере" loading="lazy" width={1024} height={768} className="aspect-[16/10] w-full object-cover" />
+              <div className="p-6">
+                <div className="mb-2 text-xs font-mono text-primary">Поддержка · SaaS-продукт</div>
+                <h3 className="text-xl font-semibold">AI-первая линия в Telegram и на сайте</h3>
+                <div className="mt-5 grid grid-cols-2 gap-4">
+                  <div className="rounded-lg bg-secondary/60 p-3">
+                    <div className="text-xs text-muted-foreground">Было</div>
+                    <div className="mt-1 font-mono text-base">12 мин · 1-я линия 4 чел.</div>
+                  </div>
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
+                    <div className="text-xs text-primary">Стало</div>
+                    <div className="mt-1 font-mono text-base">6 сек · 1 чел. на эскалации</div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            {/* Case 2 */}
+            <article className="overflow-hidden rounded-2xl border border-border bg-card">
+              <img src={caseSales} alt="AI-квалификация лидов в CRM" loading="lazy" width={1024} height={768} className="aspect-[16/10] w-full object-cover" />
+              <div className="p-6">
+                <div className="mb-2 text-xs font-mono text-primary">Продажи · B2B-услуги</div>
+                <h3 className="text-xl font-semibold">Квалификация лида и передача в amoCRM</h3>
+                <div className="mt-5 grid grid-cols-2 gap-4">
+                  <div className="rounded-lg bg-secondary/60 p-3">
+                    <div className="text-xs text-muted-foreground">Было</div>
+                    <div className="mt-1 font-mono text-base">22% доходимости до КП</div>
+                  </div>
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
+                    <div className="text-xs text-primary">Стало</div>
+                    <div className="mt-1 font-mono text-base">56% доходимости до КП</div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
-        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {process.map((p) => (
-            <div key={p.n} className="relative">
-              <div className="font-mono text-accent text-sm font-bold">{p.n}</div>
-              <h3 className="mt-3 font-bold text-lg">{p.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{p.d}</p>
+      </section>
+
+      {/* PROCESS + diagram */}
+      <section id="process" className="border-b border-border py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="mb-10">
+            <div className="font-mono text-xs uppercase tracking-widest text-primary">04 · Процесс</div>
+            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Как устроена работа</h2>
+          </div>
+
+          <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+            <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
+              <div className="mb-2 text-xs font-mono text-muted-foreground">Архитектура внедрения</div>
+              <FlowDiagram />
+              <p className="mt-2 text-xs text-muted-foreground">
+                Реактивная схема: данные текут от клиента к ассистенту, обогащаются базой знаний и уходят в CRM с метками.
+              </p>
             </div>
-          ))}
+
+            <ol className="grid gap-3 sm:grid-cols-2">
+              {process.map((p) => (
+                <li key={p.step} className="rounded-xl border border-border bg-card p-5">
+                  <div className="font-mono text-xs text-primary">{p.step}</div>
+                  <div className="mt-1 text-base font-semibold">{p.title}</div>
+                  <div className="mt-1 text-sm text-muted-foreground">{p.desc}</div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {/* Integrations strip */}
+          <div className="mt-10 overflow-hidden rounded-2xl border border-border">
+            <div className="grid gap-0 md:grid-cols-[1fr_1fr]">
+              <img src={integrations} alt="Интеграции с CRM и сервисами" loading="lazy" width={1024} height={768} className="h-full w-full object-cover" />
+              <div className="bg-card p-6 md:p-8">
+                <div className="font-mono text-xs uppercase tracking-widest text-primary">CRM · API · Телефония</div>
+                <h3 className="mt-2 text-2xl font-semibold">Подключаем к вашим системам</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Bitrix24, amoCRM, 1С, Mango Office, Яндекс Телефония, WhatsApp Business, Telegram, веб-чат. Свои API — через REST или Webhook.
+                </p>
+                <ul className="mt-5 grid grid-cols-2 gap-2 text-sm">
+                  {["Bitrix24", "amoCRM", "1С", "WhatsApp", "Telegram", "Mango Office"].map((i) => (
+                    <li key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> {i}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* PRICE / FORM */}
-      <section id="price" className="border-t border-border bg-secondary/40">
-        <div className="container py-20 grid lg:grid-cols-[1fr_1.1fr] gap-12">
+      <section id="contact" className="border-b border-border py-16 md:py-20">
+        <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[1fr_1.05fr]">
           <div>
-            <div className="text-xs uppercase tracking-wider text-accent font-bold">Стоимость и заявка</div>
-            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold">Расскажите задачу — посчитаем</h2>
-            <p className="mt-4 text-muted-foreground">
-              Мы не публикуем «пакеты» — каждое внедрение считаем под процессы клиента.
-              Чтобы вы понимали порядок цифр:
+            <div className="font-mono text-xs uppercase tracking-widest text-primary">05 · Заявка</div>
+            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Пилот за 2 недели</h2>
+            <p className="mt-3 max-w-md text-muted-foreground">
+              Стоимость пилота — от <span className="font-semibold text-foreground">90 000 ₽</span>. В неё входит: разбор задачи, прототип сценария, подключение к одному каналу и метрики на ваших данных.
             </p>
-            <div className="mt-6 space-y-4">
+
+            <ul className="mt-6 space-y-3 text-sm">
               {[
-                { t: "Чат-бот с базой знаний", p: "от 80 000 ₽", d: "Срок: 2–3 недели" },
-                { t: "ИИ-ассистент в продажах с CRM", p: "от 180 000 ₽", d: "Срок: 3–5 недель" },
-                { t: "Голосовой робот для входящих", p: "от 220 000 ₽", d: "Срок: 4–6 недель" },
-              ].map((x) => (
-                <div key={x.t} className="flex items-center justify-between gap-4 p-4 rounded-lg bg-card border border-border">
-                  <div>
-                    <div className="font-semibold">{x.t}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">{x.d}</div>
-                  </div>
-                  <div className="font-bold text-accent whitespace-nowrap">{x.p}</div>
-                </div>
+                "Брифинг и оценка эффекта — бесплатно",
+                "Фиксированная стоимость, без «переоценок»",
+                "Передача всех настроек и доступов вам",
+                "Сопровождение по подписке после пилота",
+              ].map((t) => (
+                <li key={t} className="flex gap-3">
+                  <Check className="mt-0.5 h-5 w-5 flex-none text-primary" />
+                  <span>{t}</span>
+                </li>
               ))}
-            </div>
-            <div className="mt-6 flex items-start gap-3 text-sm text-muted-foreground">
-              <LineChart className="h-5 w-5 shrink-0 text-accent mt-0.5" />
-              <span>Аудит, ТЗ и расчёт — бесплатно. Если не увидим, как окупить за 6 месяцев, честно скажем.</span>
-            </div>
+            </ul>
+
+            {/* team image */}
+            <img src={team} alt="Команда 1Lab" loading="lazy" width={1024} height={768} className="mt-8 hidden rounded-2xl border border-border object-cover lg:block" />
           </div>
 
-          <Card className="p-7 md:p-8 shadow-[var(--shadow-card)]">
-            <h3 className="text-xl font-bold flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-accent" />
-              Заявка на бесплатный аудит
-            </h3>
-            <p className="mt-2 text-sm text-muted-foreground">Перезвоним в течение 2 часов в рабочее время (Пн–Пт, 10:00–19:00 МСК).</p>
-            <form onSubmit={submit} className="mt-6 space-y-4">
+          <form onSubmit={submit} className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-[var(--shadow-card)]">
+            <h3 className="text-xl font-semibold">Оставьте заявку</h3>
+            <p className="mt-1 text-sm text-muted-foreground">Свяжемся в течение часа в рабочее время.</p>
+
+            <div className="mt-6 space-y-4">
               <div>
-                <label className="text-sm font-medium">Как к вам обращаться *</label>
-                <Input className="mt-1.5" placeholder="Иван" value={form.name}
-                       onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Имя</label>
+                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Как к вам обращаться" />
               </div>
               <div>
-                <label className="text-sm font-medium">Телефон или Telegram *</label>
-                <Input className="mt-1.5" placeholder="+7 (___) ___-__-__ или @username" value={form.contact}
-                       onChange={(e) => setForm({ ...form, contact: e.target.value })} />
+                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Телефон или Telegram</label>
+                <Input value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} placeholder="+7 ___ ___ __ __  /  @username" />
               </div>
               <div>
-                <label className="text-sm font-medium">Кратко о задаче</label>
-                <Textarea className="mt-1.5" rows={4} placeholder="Например: хотим бота, который квалифицирует заявки с сайта и заводит сделки в amoCRM"
-                          value={form.task} onChange={(e) => setForm({ ...form, task: e.target.value })} />
+                <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Задача (необязательно)</label>
+                <Textarea value={form.task} onChange={(e) => setForm({ ...form, task: e.target.value })} placeholder="Например: чат-бот в Telegram + интеграция с amoCRM" rows={4} />
               </div>
-              <Button type="submit" size="lg" disabled={loading}
-                      className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
-                {loading ? "Отправляем…" : <>Отправить заявку <Send className="ml-2 h-4 w-4" /></>}
+              <Button type="submit" size="lg" className="w-full font-semibold">
+                Отправить заявку <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
-              <p className="text-xs text-muted-foreground">
-                Нажимая кнопку, вы соглашаетесь с обработкой персональных данных. Мы не передаём контакты третьим лицам.
+              <p className="text-center text-xs text-muted-foreground">
+                Нажимая кнопку, вы соглашаетесь с обработкой персональных данных.
               </p>
-            </form>
-          </Card>
+            </div>
+          </form>
         </div>
       </section>
 
       {/* CONTACTS */}
-      <section id="contacts" className="container py-20">
-        <div className="grid md:grid-cols-3 gap-6">
-          <Card className="p-6">
-            <Phone className="h-5 w-5 text-accent" />
-            <div className="mt-4 text-xs uppercase tracking-wider text-muted-foreground font-semibold">Телефон</div>
-            <a href="tel:+78001234567" className="mt-1 block text-lg font-bold hover:text-accent">+7 (800) 123-45-67</a>
-            <div className="text-xs text-muted-foreground mt-1">Пн–Пт, 10:00–19:00 МСК</div>
-          </Card>
-          <Card className="p-6">
-            <Mail className="h-5 w-5 text-accent" />
-            <div className="mt-4 text-xs uppercase tracking-wider text-muted-foreground font-semibold">Почта</div>
-            <a href="mailto:hello@1lab.ai" className="mt-1 block text-lg font-bold hover:text-accent">hello@1lab.ai</a>
-            <div className="text-xs text-muted-foreground mt-1">Отвечаем в течение дня</div>
-          </Card>
-          <Card className="p-6">
-            <MapPin className="h-5 w-5 text-accent" />
-            <div className="mt-4 text-xs uppercase tracking-wider text-muted-foreground font-semibold">Карточка на Яндексе</div>
-            <a href={YANDEX_URL} target="_blank" rel="noreferrer" className="mt-1 block text-lg font-bold hover:text-accent">
-              1Lab AI Studio
+      <section className="py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="grid gap-6 md:grid-cols-3">
+            <a href="mailto:1lab@1true.ru" className="group rounded-2xl border border-border bg-card p-6 transition hover:border-primary/40">
+              <Mail className="h-5 w-5 text-primary" />
+              <div className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Email</div>
+              <div className="mt-1 font-mono text-lg group-hover:text-primary">1lab@1true.ru</div>
             </a>
-            <div className="text-xs text-muted-foreground mt-1">47 отзывов · 4,9 ★</div>
-          </Card>
+            <a href="https://t.me/one_lab" target="_blank" rel="noopener noreferrer" className="group rounded-2xl border border-border bg-card p-6 transition hover:border-primary/40">
+              <Send className="h-5 w-5 text-primary" />
+              <div className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Telegram</div>
+              <div className="mt-1 font-mono text-lg group-hover:text-primary">@one_lab</div>
+            </a>
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <MapPin className="h-5 w-5 text-primary" />
+              <div className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Офис</div>
+              <div className="mt-1 text-base font-semibold">Москва, ул. Тверская, 7</div>
+              <div className="mt-1 text-xs text-muted-foreground">Пн–Пт · 10:00–19:00</div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* FOOTER */}
       <footer className="border-t border-border py-8">
-        <div className="container flex flex-col md:flex-row gap-3 items-center justify-between text-sm text-muted-foreground">
-          <div>© {new Date().getFullYear()} 1Lab AI Studio · ИП / ООО · ИНН ________</div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-foreground">Политика конфиденциальности</a>
-            <a href="#contacts" className="hover:text-foreground">Контакты</a>
+        <div className="container mx-auto flex flex-col items-center justify-between gap-3 px-4 text-xs text-muted-foreground md:flex-row">
+          <div>© 2026 1Lab AI Studio · Внедрение ИИ для бизнеса</div>
+          <div className="flex items-center gap-4">
+            <a href="tel:+74951234567" className="flex items-center gap-1.5 hover:text-foreground"><Phone className="h-3.5 w-3.5" /> +7 (495) 123-45-67</a>
           </div>
         </div>
       </footer>
-      <section className="webstudio-revision-block" style={{ padding: "72px 24px", background: "#f8fafc", color: "#111827" }}>
-        <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
-          <p style={{ margin: "0 0 10px", fontSize: "13px", textTransform: "uppercase", letterSpacing: ".08em", color: "#64748b" }}>Обновление сайта</p>
-          <h2 style={{ margin: "0 0 16px", fontSize: "32px", lineHeight: 1.1 }}>{"Как нас найти"}</h2>
-          <p style={{ margin: "0 0 24px", maxWidth: "760px", fontSize: "18px", lineHeight: 1.55, color: "#334155" }}>{"Добавьте блок контактов и виджет Яндекс Карт. Адрес студии: Москва, ул. Тверская, 7. Контакты: Telegram @one_lab, email 1lab@1true.ru."}</p>
-          <iframe title="Яндекс Карта" src="https://yandex.ru/map-widget/v1/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%2C%20%D1%83%D0%BB.%20%D0%A2%D0%B2%D0%B5%D1%80%D1%81%D0%BA%D0%B0%D1%8F%2C%207&amp;z=16" loading="lazy" style={{ width: "100%", height: "360px", border: 0, borderRadius: "12px" }} />
-        </div>
-      </section>
-</div>
+    </div>
   );
 };
 
