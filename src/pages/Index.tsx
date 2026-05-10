@@ -363,20 +363,13 @@ const Index = () => {
           </div>
         </div>
       </footer>
-          <section className="webstudio-revision-block" style={{ padding: "72px 24px", background: "#f8fafc", color: "#111827" }}>
-        <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
-          <p style={{ margin: "0 0 10px", fontSize: "13px", textTransform: "uppercase", letterSpacing: ".08em", color: "#64748b" }}>Обновление сайта</p>
-          <h2 style={{ margin: "0 0 16px", fontSize: "32px", lineHeight: 1.1 }}>{"Как нас найти"}</h2>
-          <p style={{ margin: "0 0 24px", maxWidth: "760px", fontSize: "18px", lineHeight: 1.55, color: "#334155" }}>{"Добавьте блок с адресом студии, виджет Яндекс карт и контакты: Telegram @one_lab, email 1lab@1true.ru."}</p>
-          <iframe title="Яндекс Карта" src="https://yandex.ru/map-widget/v1/?text=%D1%82%D0%B5%20%D0%B1%D0%BB%D0%BE%D0%BA%20%D1%81%20%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%BE%D0%BC%20%D1%81%D1%82%D1%83%D0%B4%D0%B8%D0%B8%2C%20%20%20%20%D0%B8%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D1%8B%3A%20Telegram%20%40one_lab%2C%20email%201lab%401true.ru." loading="lazy" style={{ width: "100%", height: "360px", border: 0, borderRadius: "12px" }} />
-        </div>
-      </section>
+
       <section className="webstudio-revision-block" style={{ padding: "72px 24px", background: "#f8fafc", color: "#111827" }}>
         <div style={{ maxWidth: "1120px", margin: "0 auto" }}>
           <p style={{ margin: "0 0 10px", fontSize: "13px", textTransform: "uppercase", letterSpacing: ".08em", color: "#64748b" }}>Обновление сайта</p>
-          <h2 style={{ margin: "0 0 16px", fontSize: "32px", lineHeight: 1.1 }}>{"Как нас найти"}</h2>
-          <p style={{ margin: "0 0 24px", maxWidth: "760px", fontSize: "18px", lineHeight: 1.55, color: "#334155" }}>{"Добавьте блок с адресом студии, виджет Яндекс карт и контакты: Telegram @one_lab, email 1lab@1true.ru."}</p>
-          <iframe title="Яндекс Карта" src="https://yandex.ru/map-widget/v1/?text=%D1%82%D0%B5%20%D0%B1%D0%BB%D0%BE%D0%BA%20%D1%81%20%D0%B0%D0%B4%D1%80%D0%B5%D1%81%D0%BE%D0%BC%20%D1%81%D1%82%D1%83%D0%B4%D0%B8%D0%B8%2C%20%20%20%20%D0%B8%20%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D1%8B%3A%20Telegram%20%40one_lab%2C%20email%201lab%401true.ru." loading="lazy" style={{ width: "100%", height: "360px", border: 0, borderRadius: "12px" }} />
+          <h2 style={{ margin: "0 0 16px", fontSize: "32px", lineHeight: 1.1 }}>{"Контакты и связь"}</h2>
+          <p style={{ margin: "0 0 24px", maxWidth: "760px", fontSize: "18px", lineHeight: 1.55, color: "#334155" }}>{"???????? ???? ????????? ? ?????? ?????? ????. ????? ??????: ??????, ??. ????????, 7. ????????: Telegram @one_lab, email 1lab@1true.ru."}</p>
+
         </div>
       </section>
 </div>
